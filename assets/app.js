@@ -36,8 +36,8 @@ const getAll=()=>new Promise((resolve,reject)=>{const request=db.transaction(STO
 const putSession=session=>transact("readwrite",store=>store.put(session));
 const deleteSession=id=>transact("readwrite",store=>store.delete(id));
 const makeId=()=>crypto.randomUUID?crypto.randomUUID():"s"+Date.now().toString(36)+Math.random().toString(36).slice(2);
-function readEditor(){return {title:$("#sessionTitle").value.trim(),task:$("#task").value.trim(),goal:$("#goal").value,tone:$("#tone").value,answers:{ChatGPT:$("#answerChatGPT").value,Claude:$("#answerClaude").value,Gemini:$("#answerGemini").value},decision:{scores:readScores(),choice:$("#decisionChoice").value,next:$("#decisionNext").value.trim(),rationale:$("#decisionRationale").value.trim()}}}
-function writeEditor(s){currentSessionId=s?.id||null;$("#sessionTitle").value=s?.title||"";$("#task").value=s?.task||"";$("#goal").value=s?.goal||"analyze";$("#tone").value=s?.tone||"detailed";$("#answerChatGPT").value=s?.answers?.ChatGPT||"";$("#answerClaude").value=s?.answers?.Claude||"";$("#answerGemini").value=s?.answers?.Gemini||"";$("#decisionChoice").value=s?.decision?.choice||"";$("#decisionNext").value=s?.decision?.next||"";$("#decisionRationale").value=s?.decision?.rationale||"";writeScores(s?.decision?.scores);$("#reviewResult").hidden=true}
+function readEditor(){return {title:$("#sessionTitle").value.trim(),task:$("#task").value.trim(),goal:$("#goal").value,tone:$("#tone").value,answers:{ChatGPT:$("#answerChatGPT").value,Claude:$("#answerClaude").value,Gemini:$("#answerGemini").value},decision:{scores:readScores(),choice:$("#decisionChoice").value,next:$("#decisionNext").value.trim(),rationale:$("#decisionRationale").value.trim()},roundtable:{round1:{ChatGPT:$("#rtR1ChatGPT").value,Claude:$("#rtR1Claude").value,Gemini:$("#rtR1Gemini").value},round2:{ChatGPT:$("#rtR2ChatGPT").value,Claude:$("#rtR2Claude").value,Gemini:$("#rtR2Gemini").value}}}}
+function writeEditor(s){currentSessionId=s?.id||null;$("#sessionTitle").value=s?.title||"";$("#task").value=s?.task||"";$("#goal").value=s?.goal||"analyze";$("#tone").value=s?.tone||"detailed";$("#answerChatGPT").value=s?.answers?.ChatGPT||"";$("#answerClaude").value=s?.answers?.Claude||"";$("#answerGemini").value=s?.answers?.Gemini||"";$("#decisionChoice").value=s?.decision?.choice||"";$("#decisionNext").value=s?.decision?.next||"";$("#decisionRationale").value=s?.decision?.rationale||"";writeScores(s?.decision?.scores);["ChatGPT","Claude","Gemini"].forEach(n=>{$("#rtR1"+n).value=s?.roundtable?.round1?.[n]||"";$("#rtR2"+n).value=s?.roundtable?.round2?.[n]||""});$("#reviewResult").hidden=true;$("#rtCouncilResult").hidden=true}
 function safeDate(value){try{return new Date(value).toLocaleString(lang==="ar"?"ar-IQ":"en-US")}catch{return ""}}
 function renderSessions(){
  const list=$("#sessionList");list.replaceChildren();$("#sessionCount").textContent=String(sessions.length);
@@ -51,7 +51,7 @@ $("#reviewPromptBtn").addEventListener("click",()=>{const data=readEditor();cons
 $("#copyReviewBtn").addEventListener("click",e=>copyText($("#reviewText").textContent,e.currentTarget));
 $("#exportBtn").addEventListener("click",async()=>{const payload={format:"ai-council-hub-backup",version:1,exportedAt:new Date().toISOString(),sessions:await getAll()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="ai-council-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(url)});
 $("#importBtn").addEventListener("click",()=>$("#importFile").click());
-$("#importFile").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=="ai-council-hub-backup"||!Array.isArray(data.sessions))throw new Error("صيغة الملف غير معروفة");let count=0;for(const raw of data.sessions){if(!raw||typeof raw!=="object"||typeof raw.task!=="string")continue;const s={id:typeof raw.id==="string"?raw.id:makeId(),title:typeof raw.title==="string"?raw.title:"",task:raw.task,goal:["analyze","plan","review","create"].includes(raw.goal)?raw.goal:"analyze",tone:["detailed","concise","technical"].includes(raw.tone)?raw.tone:"detailed",answers:{ChatGPT:String(raw.answers?.ChatGPT||""),Claude:String(raw.answers?.Claude||""),Gemini:String(raw.answers?.Gemini||"")},decision:{scores:raw.decision?.scores||{},choice:typeof raw.decision?.choice==="string"?raw.decision.choice:"",next:typeof raw.decision?.next==="string"?raw.decision.next:"",rationale:typeof raw.decision?.rationale==="string"?raw.decision.rationale:""},createdAt:Number(raw.createdAt)||Date.now(),updatedAt:Number(raw.updatedAt)||Date.now()};await putSession(s);count++}await refreshSessions();alert("تم استيراد "+count+" جلسة.")}catch(error){alert("تعذر استيراد الملف: "+error.message)}finally{e.target.value=""}});
+$("#importFile").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=="ai-council-hub-backup"||!Array.isArray(data.sessions))throw new Error("صيغة الملف غير معروفة");let count=0;for(const raw of data.sessions){if(!raw||typeof raw!=="object"||typeof raw.task!=="string")continue;const s={id:typeof raw.id==="string"?raw.id:makeId(),title:typeof raw.title==="string"?raw.title:"",task:raw.task,goal:["analyze","plan","review","create"].includes(raw.goal)?raw.goal:"analyze",tone:["detailed","concise","technical"].includes(raw.tone)?raw.tone:"detailed",answers:{ChatGPT:String(raw.answers?.ChatGPT||""),Claude:String(raw.answers?.Claude||""),Gemini:String(raw.answers?.Gemini||"")},decision:{scores:raw.decision?.scores||{},choice:typeof raw.decision?.choice==="string"?raw.decision.choice:"",next:typeof raw.decision?.next==="string"?raw.decision.next:"",rationale:typeof raw.decision?.rationale==="string"?raw.decision.rationale:""},roundtable:{round1:raw.roundtable?.round1||{},round2:raw.roundtable?.round2||{}},createdAt:Number(raw.createdAt)||Date.now(),updatedAt:Number(raw.updatedAt)||Date.now()};await putSession(s);count++}await refreshSessions();alert("تم استيراد "+count+" جلسة.")}catch(error){alert("تعذر استيراد الملف: "+error.message)}finally{e.target.value=""}});
 async function initS2(){try{db=await openDatabase();await refreshSessions()}catch(error){$("#storageStatus").textContent="التخزين المحلي غير متاح";$("#storageStatus").title=error.message;$("#saveSessionBtn").disabled=true;$("#exportBtn").disabled=true;$("#importBtn").disabled=true}}
 initS2();
 if("serviceWorker"in navigator&&location.protocol!=="file:")window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
@@ -141,3 +141,108 @@ $("#copyDecisionBtn").addEventListener("click",()=>{
  copyText(lines,$("#copyDecisionBtn"));
 });
 writeScores();
+
+
+// S5: two-round manual AI Roundtable. Each step produces copy-ready prompts;
+// the user pastes official-site responses back into this local workspace.
+const rtNames=["ChatGPT","Claude","Gemini"];
+const rtOriginal=()=>Object.fromEntries(rtNames.map(n=>[n,$("#answer"+n).value.trim()]));
+const rtRead=(round)=>Object.fromEntries(rtNames.map(n=>[n,$("#rt"+round+n).value.trim()]));
+function rtCards(target,prompts,buttonLabel){
+ const root=$(target);root.replaceChildren();
+ Object.entries(prompts).forEach(([name,prompt])=>{
+  const card=document.createElement("article");card.className="peer-card";
+  const title=document.createElement("h4");title.textContent=name+" · "+(buttonLabel||"أمر الجولة");
+  const pre=document.createElement("pre");pre.textContent=prompt;
+  const copy=document.createElement("button");copy.className="copy-btn";copy.type="button";copy.textContent="نسخ الأمر";
+  copy.addEventListener("click",()=>copyText(prompt,copy));
+  card.append(title,pre,copy);root.append(card);
+ });
+}
+function rtNeedTask(){const task=$("#task").value.trim();if(!task){alert("اكتب المهمة أولاً.");return null}return task}
+$("#rtStartBtn").addEventListener("click",()=>{
+ const task=rtNeedTask();if(!task)return;
+ const original=rtOriginal(),available=rtNames.filter(n=>original[n]);
+ if(available.length<2){alert("أدخل إجابتين أصليتين على الأقل في غرفة الاجتماعات.");return}
+ const prompts={};
+ available.forEach(name=>{
+  const peers=available.filter(n=>n!==name);
+  prompts[name]=`أنت ${name} في مجلس نقاش من ثلاثة مساعدين. هذه الجولة الأولى من جولتين. كن مستقلاً وصريحاً.
+المهمة: ${task}
+
+إجابات الأعضاء الآخرين:
+${peers.map(n=>"--- "+n+" ---\n"+original[n]).join("\n\n")}
+
+المطلوب:
+1) دقق الادعاءات والمنطق والخطوات العملية في إجابات الآخرين.
+2) اذكر نقاط القوة والضعف مع اقتباس قصير أو تحديد موضع واضح.
+3) اكشف المخاطر والافتراضات والمعلومات التي تحتاج تحققاً.
+4) قدم تحسينات محددة، ولا تكرر كلامك لمجرد الاتفاق.
+5) اختم بثلاث نقاط: ما أؤيده، ما أعترض عليه، وما أحتاج دليلاً عليه.
+لا تدّع أنك تواصلت مع النماذج الأخرى، ولا تخترع مصادر أو نتائج.`;
+ });
+ rtCards("#rtRound1Prompts",prompts,"الجولة الأولى");
+ $("#rtRound1Prompts").scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#rtSecondBtn").addEventListener("click",()=>{
+ const task=rtNeedTask();if(!task)return;
+ const original=rtOriginal(),reviews=rtRead("R1");
+ const available=rtNames.filter(n=>original[n]&&reviews[n]);
+ if(available.length<2){alert("أدخل مراجعتين على الأقل في نتائج الجولة الأولى، مع الإجابات الأصلية للنماذج.");return}
+ const prompts={};
+ available.forEach(name=>{
+  const others=rtNames.filter(n=>n!==name&&reviews[n]);
+  prompts[name]=`أنت ${name} في الجولة الثانية والأخيرة من مجلس نقاش. اقرأ النقد المتبادل، ثم راجع موقفك بإنصاف.
+المهمة الأصلية: ${task}
+إجابتك الأصلية:
+${original[name]||"لم تقدم إجابة أصلية في هذه الجلسة."}
+
+مراجعتك في الجولة الأولى:
+${reviews[name]}
+
+مراجعات الأعضاء الآخرين:
+${others.map(n=>"--- مراجعة "+n+" ---\n"+reviews[n]).join("\n\n")}
+
+المطلوب:
+1) أجب عن الاعتراضات الجوهرية الموجهة إلى رأيك أو إجابتك.
+2) صحح ما ثبت ضعفه، واذكر صراحةً ما غيرته ولماذا.
+3) قيّم حجج الآخرين: ما الذي تقبله وما الذي ترفضه مع السبب.
+4) اكتب توصيتك النهائية وخطوات تنفيذها ومخاطرها.
+5) صنف المسائل إلى متفق عليها، مختلف عليها، وتحتاج تحققاً خارجياً.
+6) لا تساوِ بين الآراء إذا كانت الأدلة متفاوتة، ولا تختلق معلومات.`;
+ });
+ rtCards("#rtRound2Prompts",prompts,"الجولة الثانية");
+ $("#rtRound2Prompts").scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#rtCouncilBtn").addEventListener("click",()=>{
+ const task=rtNeedTask();if(!task)return;
+ const original=rtOriginal(),r1=rtRead("R1"),r2=rtRead("R2");
+ const gathered=rtNames.filter(n=>r2[n]);
+ if(gathered.length<2){alert("أدخل ردّين على الأقل من الجولة الثانية حتى يصدر المجلس توصية مشتركة.");return}
+ const prompt=`أنت أمين المجلس ومقرر القرار النهائي في AI Council Hub. مهمتك صياغة توصية مجلس مشتركة بناءً على جولتين من النقاش، لا الدفاع عن نموذج بعينه.
+
+المهمة الأصلية:
+${task}
+
+الإجابات الأصلية:
+${rtNames.filter(n=>original[n]).map(n=>"--- "+n+" ---\n"+original[n]).join("\n\n")}
+
+نتائج الجولة الأولى (النقد المتبادل):
+${rtNames.filter(n=>r1[n]).map(n=>"--- "+n+" ---\n"+r1[n]).join("\n\n")}
+
+نتائج الجولة الثانية (الرد والتقارب):
+${gathered.map(n=>"--- "+n+" ---\n"+r2[n]).join("\n\n")}
+
+أصدر تقريراً منظماً يتضمن:
+1) التوصية المشتركة التي تحظى بأقوى دعم، ولماذا.
+2) نقاط الاتفاق الحقيقي بين المشاركين.
+3) نقاط الخلاف التي لم تُحل، مع عرض أقوى حجة لكل جانب.
+4) جدولاً مختصراً: الادعاء، الدليل المتاح، درجة الثقة، وما يلزم للتحقق.
+5) المخاطر والاعتراضات المتبقية وخطة تخفيفها.
+6) خطة تنفيذ مرتبة حسب الأولوية، مع أول خطوة عملية.
+7) قرار المجلس: يوصي بالتنفيذ / يوصي بتجربة محدودة / يوصي بالتأجيل لحين التحقق، مع شروط واضحة.
+8) اذكر إن كانت البيانات غير كافية. لا تخترع تصويتاً أو إجماعاً أو مصادر. ميّز بين توصية المجلس وقرار المستخدم النهائي.`;
+ $("#rtCouncilText").textContent=prompt;$("#rtCouncilResult").hidden=false;
+ $("#rtCouncilResult").scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#rtCopyCouncilBtn").addEventListener("click",e=>copyText($("#rtCouncilText").textContent,e.currentTarget));
