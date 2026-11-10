@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#091713"><meta name="description" content="AI Council Hub — مساحة عمل تجمع ChatGPT وClaude وGemini في سير عمل واحد.">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/styles.css?v=4.1">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/styles.css?v=4.2">
 <title>AI Council Hub — Your AI Workspace</title>
 </head>
 <body>
@@ -31,6 +31,28 @@
 <div class="review-toolbar"><div><b>ماذا بعد جمع الإجابات؟</b><small>اختر مراجعة موحدة أو جولة تحكيم منفصلة لكل نموذج.</small></div><div class="button-row"><button id="reviewPromptBtn" class="secondary" type="button">مراجعة موحدة</button><button id="peerReviewBtn" class="primary" type="button">جولات التحكيم <span>✦</span></button></div></div>
 <div id="reviewResult" class="review-result" hidden><div class="section-head"><h3>مخرجات المراجعة</h3><button id="copyReviewBtn" class="copy-btn" type="button">نسخ الأمر</button></div><pre id="reviewText"></pre></div>
 <div id="peerResults" class="peer-results" aria-live="polite"></div>
+<div class="roundtable-panel" id="roundtable">
+ <div class="decision-heading"><div><span class="eyebrow">AI ROUNDTABLE · MANUAL MODE</span><h3>طاولة النقاش — جولتان وقرار المجلس</h3><p>انسخ الأوامر إلى المواقع الرسمية، ثم أعد الإجابات إلى الخانات. لا يوجد اتصال آلي بين النماذج.</p></div><span class="decision-mark">02 ROUNDS</span></div>
+ <div class="roundtable-steps"><span class="active">01 · النقد المتبادل</span><span>02 · الرد والتقارب</span><span>03 · توصية المجلس</span></div>
+ <div class="roundtable-actions"><button id="rtStartBtn" class="primary" type="button">إنشاء أوامر الجولة الأولى</button></div>
+ <div id="rtRound1Prompts" class="round-prompts" aria-live="polite"><div class="empty-state">ابدأ الجولة الأولى لإنشاء أوامر نقد متبادل مخصصة لكل نموذج.</div></div>
+ <div class="round-inputs">
+  <h4>نتائج الجولة الأولى</h4><p>الصق رد كل نموذج بعد مراجعته لإجابات الآخرين.</p>
+  <label>مراجعة ChatGPT<textarea id="rtR1ChatGPT" rows="5" placeholder="الصق مراجعة ChatGPT هنا..."></textarea></label>
+  <label>مراجعة Claude<textarea id="rtR1Claude" rows="5" placeholder="الصق مراجعة Claude هنا..."></textarea></label>
+  <label>مراجعة Gemini<textarea id="rtR1Gemini" rows="5" placeholder="الصق مراجعة Gemini هنا..."></textarea></label>
+ </div>
+ <div class="roundtable-actions"><button id="rtSecondBtn" class="primary" type="button">إنشاء أوامر الجولة الثانية</button></div>
+ <div id="rtRound2Prompts" class="round-prompts" aria-live="polite"><div class="empty-state">تظهر أوامر الجولة الثانية بعد إدخال مراجعتين على الأقل.</div></div>
+ <div class="round-inputs">
+  <h4>نتائج الجولة الثانية</h4><p>كل نموذج يرد على الانتقادات ويحدد ما غيّره وما بقي مختلفاً عليه.</p>
+  <label>رد ChatGPT<textarea id="rtR2ChatGPT" rows="5" placeholder="الصق رد ChatGPT النهائي هنا..."></textarea></label>
+  <label>رد Claude<textarea id="rtR2Claude" rows="5" placeholder="الصق رد Claude النهائي هنا..."></textarea></label>
+  <label>رد Gemini<textarea id="rtR2Gemini" rows="5" placeholder="الصق رد Gemini النهائي هنا..."></textarea></label>
+ </div>
+ <div class="roundtable-actions"><button id="rtCouncilBtn" class="gold-button" type="button">صياغة توصية المجلس المشتركة</button></div>
+ <div id="rtCouncilResult" class="review-result" hidden><div class="section-head"><h3>أمر القرار المشترك</h3><button id="rtCopyCouncilBtn" class="copy-btn" type="button">نسخ أمر المجلس</button></div><pre id="rtCouncilText"></pre><p class="roundtable-note">أرسل هذا الأمر إلى أحد المساعدين ليعمل أميناً للمجلس. النتيجة توصية مشتركة للمراجعة وليست قراراً آلياً ملزماً.</p></div>
+</div>
 
 <div class="decision-workbench" id="decisionWorkbench">
  <div class="decision-heading"><div><span class="eyebrow">DECISION INTELLIGENCE</span><h3>مركز اتخاذ القرار</h3><p>قيّم الإجابات بمعايير موحدة، ثم وثّق اختيارك والخطوة التالية.</p></div><span class="decision-mark">04 / DECIDE</span></div>
@@ -66,5 +88,5 @@
 <div class="saved-sessions"><div class="saved-heading"><div><span class="eyebrow">YOUR HISTORY</span><h3>الجلسات المحفوظة</h3></div><span class="count-pill" id="sessionCount">0</span></div><div class="session-tools"><input id="sessionSearch" type="search" placeholder="ابحث في جلساتك..." aria-label="البحث في الجلسات"><div><button id="exportBtn" class="ghost" type="button">↓ تصدير JSON</button><button id="importBtn" class="ghost" type="button">↑ استيراد</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></div><div id="sessionList" class="session-list"><div class="empty-state">لا توجد جلسات محفوظة بعد.</div></div></div>
 <p class="privacy-note">🔒 تُحفظ الجلسات في هذا المتصفح فقط. صدّر نسخة احتياطية قبل مسح بيانات المتصفح أو الانتقال إلى جهاز آخر.</p></section>
 <section class="section" id="projects"><div class="section-heading"><div><span class="eyebrow">ACTIVE WORKSPACES</span><h2>مشاريع على الطاولة</h2><p>مساحات يمكنك تخصيص جلسات المجلس لها.</p></div><span class="section-index">04 / PROJECTS</span></div><div class="project-grid"><article class="project-card"><span>01</span><h3>مكتبة الحيالي الرقمية</h3><p>التجارة الرقمية وتجربة المستخدم.</p></article><article class="project-card"><span>02</span><h3>TurboDL</h3><p>خدمات التحميل وأتمتة تيليغرام.</p></article><article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p>عالم القتال والتقدم داخل Roblox.</p></article><article class="project-card"><span>04</span><h3>MidnightFables</h3><p>قصص قصيرة بأسلوب سينمائي.</p></article></div></section>
-<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><span>صُنع ليكون قرارك أوضح — لا ليقرّر بدلاً عنك.</span><span>v4.1 · S4</span></footer>
-</main><script src="assets/app.js?v=4.1" defer></script></body></html>
+<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><span>صُنع ليكون قرارك أوضح — لا ليقرّر بدلاً عنك.</span><span>v4.2 · S5</span></footer>
+</main><script src="assets/app.js?v=4.2" defer></script></body></html>
