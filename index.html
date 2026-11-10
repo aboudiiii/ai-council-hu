@@ -31,8 +31,40 @@
 <div class="review-toolbar"><div><b>ماذا بعد جمع الإجابات؟</b><small>اختر مراجعة موحدة أو جولة تحكيم منفصلة لكل نموذج.</small></div><div class="button-row"><button id="reviewPromptBtn" class="secondary" type="button">مراجعة موحدة</button><button id="peerReviewBtn" class="primary" type="button">جولات التحكيم <span>✦</span></button></div></div>
 <div id="reviewResult" class="review-result" hidden><div class="section-head"><h3>مخرجات المراجعة</h3><button id="copyReviewBtn" class="copy-btn" type="button">نسخ الأمر</button></div><pre id="reviewText"></pre></div>
 <div id="peerResults" class="peer-results" aria-live="polite"></div>
+
+<div class="decision-workbench" id="decisionWorkbench">
+ <div class="decision-heading"><div><span class="eyebrow">DECISION INTELLIGENCE</span><h3>مركز اتخاذ القرار</h3><p>قيّم الإجابات بمعايير موحدة، ثم وثّق اختيارك والخطوة التالية.</p></div><span class="decision-mark">04 / DECIDE</span></div>
+ <div class="score-guide"><span>التقييم من 1 إلى 5</span><span>1 ضعيف · 3 متوسط · 5 ممتاز</span></div>
+ <div class="score-grid">
+  <article class="score-card" data-model="ChatGPT"><div class="score-card-head"><span class="model-dot chat-dot"></span><b>ChatGPT</b><output id="totalChatGPT">0.0 / 5</output></div>
+   <label>الدقة <input type="range" min="1" max="5" step="1" value="3" data-score="accuracy"></label>
+   <label>الاكتمال <input type="range" min="1" max="5" step="1" value="3" data-score="completeness"></label>
+   <label>قابلية التنفيذ <input type="range" min="1" max="5" step="1" value="3" data-score="practicality"></label>
+   <label>وضوح الأدلة <input type="range" min="1" max="5" step="1" value="3" data-score="evidence"></label>
+  </article>
+  <article class="score-card" data-model="Claude"><div class="score-card-head"><span class="model-dot claude-dot"></span><b>Claude</b><output id="totalClaude">0.0 / 5</output></div>
+   <label>الدقة <input type="range" min="1" max="5" step="1" value="3" data-score="accuracy"></label>
+   <label>الاكتمال <input type="range" min="1" max="5" step="1" value="3" data-score="completeness"></label>
+   <label>قابلية التنفيذ <input type="range" min="1" max="5" step="1" value="3" data-score="practicality"></label>
+   <label>وضوح الأدلة <input type="range" min="1" max="5" step="1" value="3" data-score="evidence"></label>
+  </article>
+  <article class="score-card" data-model="Gemini"><div class="score-card-head"><span class="model-dot gem-dot"></span><b>Gemini</b><output id="totalGemini">0.0 / 5</output></div>
+   <label>الدقة <input type="range" min="1" max="5" step="1" value="3" data-score="accuracy"></label>
+   <label>الاكتمال <input type="range" min="1" max="5" step="1" value="3" data-score="completeness"></label>
+   <label>قابلية التنفيذ <input type="range" min="1" max="5" step="1" value="3" data-score="practicality"></label>
+   <label>وضوح الأدلة <input type="range" min="1" max="5" step="1" value="3" data-score="evidence"></label>
+  </article>
+ </div>
+ <div class="decision-summary"><div><span class="eyebrow">SCORE SUMMARY</span><b id="scoreRecommendation">أدخل الإجابات وقيّمها لعرض المقارنة</b><small id="scoreCaveat">الدرجات أداة مساعدة وليست حكماً آلياً على صحة الإجابات.</small></div><div class="score-bars" id="scoreBars"></div></div>
+ <div class="decision-fields">
+  <div><label for="decisionChoice">القرار النهائي</label><select id="decisionChoice"><option value="">لم أحسم القرار بعد</option><option value="ChatGPT">اعتماد إجابة ChatGPT</option><option value="Claude">اعتماد إجابة Claude</option><option value="Gemini">اعتماد إجابة Gemini</option><option value="combined">دمج أفضل أجزاء الإجابات</option><option value="defer">تأجيل القرار لحين التحقق</option></select></div>
+  <div><label for="decisionNext">الخطوة التالية</label><input id="decisionNext" class="text-input" maxlength="240" placeholder="مثلاً: اختبار الحل على نسخة تجريبية"></div>
+ </div>
+ <label for="decisionRationale">سبب القرار والملاحظات</label><textarea id="decisionRationale" rows="3" placeholder="لماذا اخترت هذا المسار؟ ما الذي يحتاج تحققاً قبل التنفيذ؟"></textarea>
+ <div class="decision-actions"><button id="copyDecisionBtn" class="secondary" type="button">نسخ ملخص القرار</button><span id="decisionStatus">يُحفظ القرار ضمن الجلسة عند الضغط على «حفظ الجلسة».</span></div>
+</div>
 <div class="saved-sessions"><div class="saved-heading"><div><span class="eyebrow">YOUR HISTORY</span><h3>الجلسات المحفوظة</h3></div><span class="count-pill" id="sessionCount">0</span></div><div class="session-tools"><input id="sessionSearch" type="search" placeholder="ابحث في جلساتك..." aria-label="البحث في الجلسات"><div><button id="exportBtn" class="ghost" type="button">↓ تصدير JSON</button><button id="importBtn" class="ghost" type="button">↑ استيراد</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></div><div id="sessionList" class="session-list"><div class="empty-state">لا توجد جلسات محفوظة بعد.</div></div></div>
 <p class="privacy-note">🔒 تُحفظ الجلسات في هذا المتصفح فقط. صدّر نسخة احتياطية قبل مسح بيانات المتصفح أو الانتقال إلى جهاز آخر.</p></section>
 <section class="section" id="projects"><div class="section-heading"><div><span class="eyebrow">ACTIVE WORKSPACES</span><h2>مشاريع على الطاولة</h2><p>مساحات يمكنك تخصيص جلسات المجلس لها.</p></div><span class="section-index">04 / PROJECTS</span></div><div class="project-grid"><article class="project-card"><span>01</span><h3>مكتبة الحيالي الرقمية</h3><p>التجارة الرقمية وتجربة المستخدم.</p></article><article class="project-card"><span>02</span><h3>TurboDL</h3><p>خدمات التحميل وأتمتة تيليغرام.</p></article><article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p>عالم القتال والتقدم داخل Roblox.</p></article><article class="project-card"><span>04</span><h3>MidnightFables</h3><p>قصص قصيرة بأسلوب سينمائي.</p></article></div></section>
-<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><span>صُنع ليكون قرارك أوضح — لا ليقرّر بدلاً عنك.</span><span>v3.0 · S3</span></footer>
+<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><span>صُنع ليكون قرارك أوضح — لا ليقرّر بدلاً عنك.</span><span>v4.0 · S4</span></footer>
 </main><script src="assets/app.js" defer></script></body></html>
