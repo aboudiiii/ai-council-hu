@@ -1,0 +1,1 @@
+{"name":"AI Council Hub","short_name":"AI Council","description":"A mobile-first workspace for collaborating with AI assistants.","start_url":"./","scope":"./","display":"standalone","background_color":"#061410","theme_color":"#071b17","icons":[{"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
