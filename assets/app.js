@@ -36,8 +36,8 @@ const getAll=()=>new Promise((resolve,reject)=>{const request=db.transaction(STO
 const putSession=session=>transact("readwrite",store=>store.put(session));
 const deleteSession=id=>transact("readwrite",store=>store.delete(id));
 const makeId=()=>crypto.randomUUID?crypto.randomUUID():"s"+Date.now().toString(36)+Math.random().toString(36).slice(2);
-function readEditor(){return {title:$("#sessionTitle").value.trim(),task:$("#task").value.trim(),goal:$("#goal").value,tone:$("#tone").value,answers:{ChatGPT:$("#answerChatGPT").value,Claude:$("#answerClaude").value,Gemini:$("#answerGemini").value}}}
-function writeEditor(s){currentSessionId=s?.id||null;$("#sessionTitle").value=s?.title||"";$("#task").value=s?.task||"";$("#goal").value=s?.goal||"analyze";$("#tone").value=s?.tone||"detailed";$("#answerChatGPT").value=s?.answers?.ChatGPT||"";$("#answerClaude").value=s?.answers?.Claude||"";$("#answerGemini").value=s?.answers?.Gemini||"";$("#reviewResult").hidden=true}
+function readEditor(){return {title:$("#sessionTitle").value.trim(),task:$("#task").value.trim(),goal:$("#goal").value,tone:$("#tone").value,answers:{ChatGPT:$("#answerChatGPT").value,Claude:$("#answerClaude").value,Gemini:$("#answerGemini").value},decision:{scores:readScores(),choice:$("#decisionChoice").value,next:$("#decisionNext").value.trim(),rationale:$("#decisionRationale").value.trim()}}}
+function writeEditor(s){currentSessionId=s?.id||null;$("#sessionTitle").value=s?.title||"";$("#task").value=s?.task||"";$("#goal").value=s?.goal||"analyze";$("#tone").value=s?.tone||"detailed";$("#answerChatGPT").value=s?.answers?.ChatGPT||"";$("#answerClaude").value=s?.answers?.Claude||"";$("#answerGemini").value=s?.answers?.Gemini||"";$("#decisionChoice").value=s?.decision?.choice||"";$("#decisionNext").value=s?.decision?.next||"";$("#decisionRationale").value=s?.decision?.rationale||"";writeScores(s?.decision?.scores);$("#reviewResult").hidden=true}
 function safeDate(value){try{return new Date(value).toLocaleString(lang==="ar"?"ar-IQ":"en-US")}catch{return ""}}
 function renderSessions(){
  const list=$("#sessionList");list.replaceChildren();$("#sessionCount").textContent=String(sessions.length);
@@ -86,3 +86,58 @@ $("#peerReviewBtn").addEventListener("click",()=>{
  output.scrollIntoView({behavior:"smooth",block:"nearest"});
 });
 $("#sessionSearch")?.addEventListener("input",renderSessions);
+
+
+// S4 decision workbench: transparent rubric, editable scores, and saved rationale.
+function readScores(){
+ const scores={};
+ document.querySelectorAll(".score-card").forEach(card=>{
+  const model=card.dataset.model;scores[model]={};
+  card.querySelectorAll("[data-score]").forEach(input=>scores[model][input.dataset.score]=Number(input.value)||1);
+ });
+ return scores;
+}
+function writeScores(scores){
+ document.querySelectorAll(".score-card").forEach(card=>{
+  const values=scores?.[card.dataset.model]||{};
+  card.querySelectorAll("[data-score]").forEach(input=>{
+   const value=Number(values[input.dataset.score]);
+   input.value=String(Number.isFinite(value)&&value>=1&&value<=5?value:3);
+  });
+ });
+ updateScoreSummary();
+}
+function updateScoreSummary(){
+ const models=["ChatGPT","Claude","Gemini"];
+ const ranked=models.map(name=>{
+  const values=Object.values(readScores()[name]||{});
+  return {name,score:values.length?values.reduce((a,b)=>a+b,0)/values.length:0};
+ }).sort((a,b)=>b.score-a.score);
+ models.forEach(name=>{$("#total"+name).textContent=ranked.find(x=>x.name===name).score.toFixed(1)+" / 5"});
+ $("#scoreBars").replaceChildren();
+ ranked.forEach(item=>{
+  const row=document.createElement("div");row.className="score-bar-row";
+  const label=document.createElement("span");label.textContent=item.name;
+  const track=document.createElement("div");track.className="score-track";
+  const fill=document.createElement("i");fill.style.width=(item.score/5*100)+"%";track.append(fill);
+  const value=document.createElement("b");value.textContent=item.score.toFixed(1);
+  row.append(label,track,value);$("#scoreBars").append(row);
+ });
+ const max=ranked[0]?.score||0;
+ const winners=ranked.filter(x=>Math.abs(x.score-max)<0.001);
+ $("#scoreRecommendation").textContent=winners.length>1?"تعادل في أعلى تقييم: "+winners.map(x=>x.name).join(" و "):"أعلى متوسط تقييم: "+winners[0].name+" ("+max.toFixed(1)+"/5)";
+ $("#scoreCaveat").textContent="المتوسط متساوي الأوزان للمعايير الأربعة؛ راجع الأدلة والمخاطر قبل الحسم.";
+}
+document.querySelectorAll(".score-card input[data-score]").forEach(input=>input.addEventListener("input",updateScoreSummary));
+$("#copyDecisionBtn").addEventListener("click",()=>{
+ const data=readEditor();
+ const lines=["ملخص قرار مجلس الذكاء الاصطناعي","المهمة: "+data.task,"",
+  ...Object.entries(data.decision.scores).map(([name,values])=>name+": "+(Object.values(values).reduce((a,b)=>a+b,0)/4).toFixed(2)+" / 5"),
+  "القرار: "+(data.decision.choice||"غير محسوم"),
+  "الخطوة التالية: "+(data.decision.next||"غير محددة"),
+  "المبررات: "+(data.decision.rationale||"لا توجد ملاحظات"),
+  "تنبيه: الدرجات تقديرات بشرية مساعدة وليست إثباتاً لصحة المعلومات.")
+ .join("\n");
+ copyText(lines,$("#copyDecisionBtn"));
+});
+writeScores();
