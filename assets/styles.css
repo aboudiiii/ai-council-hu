@@ -132,3 +132,21 @@ textarea, input, select{max-width:100%}
 .decision-actions>span{font-size:10px;color:var(--muted)}
 @media(max-width:900px){.score-grid{grid-template-columns:1fr}.decision-summary{grid-template-columns:1fr}.decision-workbench{padding:17px}}
 @media(max-width:600px){.decision-heading{align-items:flex-start;flex-direction:column}.score-guide{flex-direction:column;gap:2px}.decision-fields{grid-template-columns:1fr}.decision-actions{align-items:stretch;flex-direction:column}.decision-actions button{width:100%}}
+
+/* S5 AI Roundtable */
+.roundtable-panel{margin:24px 0;padding:clamp(16px,2.5vw,27px);border:1px solid #806d46;border-radius:18px;background:linear-gradient(150deg,#10271f,#091a14);min-width:0}
+.roundtable-panel h3{margin:5px 0;font-size:21px}.roundtable-panel p{color:var(--muted);font-size:12px;line-height:1.8}
+.roundtable-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:18px 0}
+.roundtable-steps span{padding:10px 8px;border:1px solid var(--line);border-radius:10px;text-align:center;color:var(--muted);font-size:11px}
+.roundtable-steps span.active{border-color:#9a8050;color:var(--gold);background:#dfbd7310}
+.roundtable-actions{display:flex;justify-content:flex-start;gap:10px;margin:14px 0}
+.roundtable-actions button{min-height:42px}
+.round-inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.round-inputs h4,.round-inputs>p{grid-column:1/-1;margin:0}
+.round-inputs label{display:grid;gap:7px;font-size:12px;color:#dce6dc;min-width:0}
+.round-inputs textarea{width:100%;min-height:130px;resize:vertical}
+.round-prompts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.round-prompts:empty{display:none}
+.roundtable-note{border-top:1px solid var(--line);padding-top:12px}
+.gold-button{background:var(--gold);color:#152018;border:1px solid var(--gold);border-radius:10px;padding:11px 16px;font-weight:700}
+@media(max-width:850px){.round-inputs,.round-prompts{grid-template-columns:1fr}.roundtable-steps{grid-template-columns:1fr}.roundtable-actions button{width:100%}}
