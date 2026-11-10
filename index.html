@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071b17"><meta name="description" content="AI Council Hub — مساحة واحدة لتنظيم العمل مع ChatGPT وClaude وGemini.">
+  <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/styles.css">
+  <title>AI Council Hub</title>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="#"><span class="brand-mark">✦</span><span>AI Council <small>HUB</small></span></a><div class="top-actions"><button id="langBtn" class="ghost" type="button">EN</button><span class="status"><i></i><span data-i18n="local">مساحة عمل محلية</span></span></div></header>
+<main class="shell">
+  <section class="hero"><div><p class="eyebrow" data-i18n="eyebrow">مركز التعاون الذكي</p><h1 data-i18n="headline">ثلاثة عقول. مساحة واحدة.</h1><p class="hero-copy" data-i18n="intro">حضّر أفكارك، وزّع الأسئلة، واجمع الإجابات حتى تتخذ قراراً أوضح.</p><div class="hero-note" data-i18n="notice">نسخة S1 تعمل يدوياً عبر المواقع الرسمية — لا يوجد اتصال آلي أو API.</div></div><div class="hero-orbit"><span>AI</span><b>✦</b></div></section>
+  <section class="section"><div class="section-head"><div><p class="eyebrow" data-i18n="council">المجلس</p><h2 data-i18n="assistants">المساعدون</h2></div><span class="muted" data-i18n="openOfficial">افتح الموقع الرسمي</span></div>
+    <div class="agent-grid">
+      <article class="agent-card"><div class="agent-icon chatgpt">◎</div><h3>ChatGPT</h3><p data-i18n="chatDesc">تحليل، تخطيط، وابتكار الحلول.</p><a class="link-btn" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT ↗</a></article>
+      <article class="agent-card"><div class="agent-icon claude">✳</div><h3>Claude</h3><p data-i18n="claudeDesc">تفكير متأنٍ ومراجعة التفاصيل.</p><a class="link-btn" href="https://claude.ai/" target="_blank" rel="noopener">Open Claude ↗</a></article>
+      <article class="agent-card"><div class="agent-icon gemini">✦</div><h3>Gemini</h3><p data-i18n="gemDesc">زوايا إضافية وأفكار متنوعة.</p><a class="link-btn" href="https://gemini.google.com/" target="_blank" rel="noopener">Open Gemini ↗</a></article>
+    </div>
+  </section>
+  <section class="section workspace"><div class="section-head"><div><p class="eyebrow" data-i18n="promptLab">مختبر الأوامر</p><h2 data-i18n="preparePrompt">جهّز سؤالك للمجلس</h2></div></div>
+    <label for="task" data-i18n="taskLabel">شنو المهمة أو السؤال؟</label><textarea id="task" rows="5" data-i18n-placeholder="taskPlaceholder" placeholder="اكتب الفكرة أو المشكلة بالتفصيل..."></textarea>
+    <div class="field-row"><div><label for="goal" data-i18n="goalLabel">الهدف</label><select id="goal"><option value="analyze" data-i18n="goalAnalyze">تحليل ومقارنة</option><option value="plan" data-i18n="goalPlan">خطة تنفيذ</option><option value="review" data-i18n="goalReview">مراجعة ونقد</option><option value="create" data-i18n="goalCreate">ابتكار وبناء</option></select></div><div><label for="tone" data-i18n="toneLabel">أسلوب الإجابة</label><select id="tone"><option value="detailed" data-i18n="toneDetailed">مفصل وعملي</option><option value="concise" data-i18n="toneConcise">مختصر ومباشر</option><option value="technical" data-i18n="toneTechnical">تقني ومتخصص</option></select></div></div>
+    <div class="button-row"><button id="generateBtn" class="primary" type="button" data-i18n="generate">إنشاء أوامر المجلس</button><button id="clearBtn" class="ghost" type="button" data-i18n="clear">مسح</button></div>
+    <div id="promptResults" class="prompt-results" aria-live="polite"><div class="empty-state" data-i18n="empty">الأوامر المخصصة لكل مساعد راح تظهر هنا.</div></div>
+  </section>
+  <section class="section"><div class="section-head"><div><p class="eyebrow" data-i18n="projectsEyebrow">مساحات العمل</p><h2 data-i18n="projects">مشاريعك</h2></div></div><div class="project-grid">
+    <article class="project-card"><span>01</span><h3 data-i18n="library">مكتبة الحيالي الرقمية</h3><p data-i18n="libraryDesc">المتجر، الإدارة، وتجربة المستخدم.</p></article>
+    <article class="project-card"><span>02</span><h3>TurboDL</h3><p data-i18n="turboDesc">بوت التحميل وخدمات تيليغرام.</p></article>
+    <article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p data-i18n="riftDesc">عالم القتال والتقدم داخل Roblox.</p></article>
+    <article class="project-card"><span>04</span><h3>MidnightFables</h3><p data-i18n="midDesc">قصص قصيرة سينمائية.</p></article>
+  </div></section>
+  <footer><span>AI Council Hub · S1</span><span data-i18n="footer">قرارك النهائي يبقى بيدك.</span></footer>
+</main><script src="assets/app.js" defer></script></body></html>
