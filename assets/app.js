@@ -42,7 +42,7 @@ function safeDate(value){try{return new Date(value).toLocaleString(lang==="ar"?"
 function renderSessions(){
  const list=$("#sessionList");list.replaceChildren();$("#sessionCount").textContent=String(sessions.length);
  if(!sessions.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="لا توجد جلسات محفوظة بعد.";list.append(empty);return}
- sessions.sort((a,b)=>b.updatedAt-a.updatedAt).forEach(s=>{const item=document.createElement("article");item.className="session-item";const info=document.createElement("div"),title=document.createElement("strong"),meta=document.createElement("small");title.textContent=s.title||s.task.slice(0,65)||"جلسة بدون عنوان";meta.textContent=safeDate(s.updatedAt);info.append(title,meta);const actions=document.createElement("div");actions.className="session-actions";const load=document.createElement("button");load.type="button";load.textContent="فتح";load.addEventListener("click",()=>writeEditor(s));const del=document.createElement("button");del.type="button";del.className="danger";del.textContent="حذف";del.addEventListener("click",async()=>{if(!confirm("تحذف هذه الجلسة نهائياً من هذا الجهاز؟"))return;await deleteSession(s.id);if(currentSessionId===s.id)writeEditor(null);await refreshSessions()});actions.append(load,del);item.append(info,actions);list.append(item)})
+ const term=($("#sessionSearch")?.value||"").trim().toLocaleLowerCase();sessions.filter(s=>!term||[s.title,s.task].join(" ").toLocaleLowerCase().includes(term)).sort((a,b)=>b.updatedAt-a.updatedAt).forEach(s=>{const item=document.createElement("article");item.className="session-item";const info=document.createElement("div"),title=document.createElement("strong"),meta=document.createElement("small");title.textContent=s.title||s.task.slice(0,65)||"جلسة بدون عنوان";meta.textContent=safeDate(s.updatedAt);info.append(title,meta);const actions=document.createElement("div");actions.className="session-actions";const load=document.createElement("button");load.type="button";load.textContent="فتح";load.addEventListener("click",()=>writeEditor(s));const del=document.createElement("button");del.type="button";del.className="danger";del.textContent="حذف";del.addEventListener("click",async()=>{if(!confirm("تحذف هذه الجلسة نهائياً من هذا الجهاز؟"))return;await deleteSession(s.id);if(currentSessionId===s.id)writeEditor(null);await refreshSessions()});actions.append(load,del);item.append(info,actions);list.append(item)})
 }
 async function refreshSessions(){sessions=await getAll();renderSessions()}
 $("#saveSessionBtn").addEventListener("click",async()=>{const data=readEditor();if(!data.task){alert("اكتب المهمة أولاً قبل حفظ الجلسة.");return}const now=Date.now();const existing=sessions.find(s=>s.id===currentSessionId);const session={...data,id:currentSessionId||makeId(),createdAt:existing?.createdAt||now,updatedAt:now};await putSession(session);currentSessionId=session.id;await refreshSessions();$("#storageStatus").textContent="تم الحفظ محلياً ✓"});
@@ -56,3 +56,33 @@ async function initS2(){try{db=await openDatabase();await refreshSessions()}catc
 initS2();
 if("serviceWorker"in navigator&&location.protocol!=="file:")window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 setLang();
+
+
+// S3: independent peer-review rounds. Each model receives the task and the other
+// models' answers, but not its own answer, to reduce self-confirmation bias.
+$("#peerReviewBtn").addEventListener("click",()=>{
+ const task=$("#task").value.trim();
+ if(!task){alert("اكتب المهمة أولاً.");return}
+ const all={ChatGPT:$("#answerChatGPT").value.trim(),Claude:$("#answerClaude").value.trim(),Gemini:$("#answerGemini").value.trim()};
+ const available=Object.entries(all).filter(([,answer])=>answer);
+ if(available.length<2){alert("أدخل إجابتين على الأقل حتى نبدأ جولات التحكيم.");return}
+ const output=$("#peerResults");output.replaceChildren();
+ const instructions={
+ ChatGPT:"قدّم تحليلاً منظماً، واختبر صحة الاستنتاجات وقابلية التنفيذ. لا تفترض أن الإجابة الأطول أفضل.",
+ Claude:"دقّق في المنطق والافتراضات، وابحث عن الثغرات والتناقضات والمخاطر التي لم تُذكر.",
+ Gemini:"ابحث عن زوايا بديلة وحلول غير مطروقة، واختبر الادعاءات التي تبدو متفقاً عليها دون دليل."
+ };
+ available.forEach(([reviewer])=>{
+  const others=available.filter(([name])=>name!==reviewer);
+  const prompt=`أنت ${reviewer} وتشارك في جولة تحكيم مستقلة ضمن مجلس ذكاء اصطناعي.\nالمهمة الأصلية:\n${task}\n\nراجع إجابات الأعضاء الآخرين فقط، ولا تستخدم إجابتك السابقة كدليل.\n\n${others.map(([name,answer])=>`إجابة ${name}:\n${answer}`).join("\n\n---\n\n")}\n\nمهمتك في هذه الجولة:\n- ${instructions[reviewer]}\n- اذكر نقاط القوة والضعف لكل إجابة مع شواهد من النص.\n- افصل بين الأخطاء المؤكدة والشكوك وما يحتاج إلى تحقق خارجي.\n- أعطِ حكماً مستقلاً: ما الذي يجب اعتماده، تعديله، أو رفضه؟\n- اقترح سؤال تحقق واحداً عالي القيمة.\nلا تختلق مصادر أو حقائق، ولا تجامل أي نموذج.`;
+  const card=document.createElement("article");card.className="peer-card";
+  const title=document.createElement("h4");title.textContent="جولة تحكيم: "+reviewer;
+  const desc=document.createElement("p");desc.textContent="انسخ هذا الأمر إلى "+reviewer+" بعد فتح محادثة مناسبة.";
+  const pre=document.createElement("pre");pre.textContent=prompt;
+  const copy=document.createElement("button");copy.className="copy-btn";copy.type="button";copy.textContent="نسخ أمر التحكيم";
+  copy.addEventListener("click",()=>copyText(prompt,copy));
+  card.append(title,desc,pre,copy);output.append(card);
+ });
+ output.scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#sessionSearch")?.addEventListener("input",renderSessions);
