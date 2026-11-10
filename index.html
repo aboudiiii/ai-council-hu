@@ -23,11 +23,28 @@
     <div class="button-row"><button id="generateBtn" class="primary" type="button" data-i18n="generate">إنشاء أوامر المجلس</button><button id="clearBtn" class="ghost" type="button" data-i18n="clear">مسح</button></div>
     <div id="promptResults" class="prompt-results" aria-live="polite"><div class="empty-state" data-i18n="empty">الأوامر المخصصة لكل مساعد راح تظهر هنا.</div></div>
   </section>
+  <section class="section workspace" id="memorySection">
+    <div class="section-head"><div><p class="eyebrow">S2 · ذاكرة المجلس</p><h2 data-i18n="memoryTitle">جلسات المجلس وإجاباته</h2></div><span class="muted" id="storageStatus">تخزين محلي على هذا الجهاز</span></div>
+    <div class="session-toolbar">
+      <input id="sessionTitle" type="text" maxlength="100" placeholder="عنوان الجلسة (اختياري)" aria-label="عنوان الجلسة">
+      <button id="newSessionBtn" class="ghost" type="button">جلسة جديدة</button>
+      <button id="saveSessionBtn" class="primary" type="button">حفظ الجلسة</button>
+    </div>
+    <div class="response-grid">
+      <div><label for="answerChatGPT">إجابة ChatGPT</label><textarea id="answerChatGPT" rows="6" placeholder="الصق إجابة ChatGPT هنا..."></textarea></div>
+      <div><label for="answerClaude">إجابة Claude</label><textarea id="answerClaude" rows="6" placeholder="الصق إجابة Claude هنا..."></textarea></div>
+      <div><label for="answerGemini">إجابة Gemini</label><textarea id="answerGemini" rows="6" placeholder="الصق إجابة Gemini هنا..."></textarea></div>
+    </div>
+    <div class="button-row"><button id="reviewPromptBtn" class="primary" type="button">إنشاء أمر المراجعة المتبادلة</button><button id="exportBtn" class="ghost" type="button">تصدير نسخة JSON</button><button id="importBtn" class="ghost" type="button">استيراد نسخة</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
+    <div id="reviewResult" class="review-result" hidden><div class="section-head"><h3>أمر المراجعة المتبادلة</h3><button id="copyReviewBtn" class="copy-btn" type="button">نسخ الأمر</button></div><pre id="reviewText"></pre></div>
+    <div class="saved-sessions"><div class="section-head"><h3 data-i18n="savedTitle">الجلسات المحفوظة</h3><span class="muted" id="sessionCount">0</span></div><div id="sessionList" class="session-list"><div class="empty-state">لا توجد جلسات محفوظة بعد.</div></div></div>
+    <p class="privacy-note">🔒 بياناتك تبقى في IndexedDB داخل هذا المتصفح. امسح بيانات المتصفح أو استخدم جهازاً آخر فقط بعد تصدير نسخة احتياطية.</p>
+  </section>
   <section class="section"><div class="section-head"><div><p class="eyebrow" data-i18n="projectsEyebrow">مساحات العمل</p><h2 data-i18n="projects">مشاريعك</h2></div></div><div class="project-grid">
     <article class="project-card"><span>01</span><h3 data-i18n="library">مكتبة الحيالي الرقمية</h3><p data-i18n="libraryDesc">المتجر، الإدارة، وتجربة المستخدم.</p></article>
     <article class="project-card"><span>02</span><h3>TurboDL</h3><p data-i18n="turboDesc">بوت التحميل وخدمات تيليغرام.</p></article>
     <article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p data-i18n="riftDesc">عالم القتال والتقدم داخل Roblox.</p></article>
     <article class="project-card"><span>04</span><h3>MidnightFables</h3><p data-i18n="midDesc">قصص قصيرة سينمائية.</p></article>
   </div></section>
-  <footer><span>AI Council Hub · S1</span><span data-i18n="footer">قرارك النهائي يبقى بيدك.</span></footer>
+  <footer><span>AI Council Hub · S2</span><span data-i18n="footer">قرارك النهائي يبقى بيدك.</span></footer>
 </main><script src="assets/app.js" defer></script></body></html>
