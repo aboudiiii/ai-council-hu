@@ -1,50 +1,38 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#071b17"><meta name="description" content="AI Council Hub — مساحة واحدة لتنظيم العمل مع ChatGPT وClaude وGemini.">
-  <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/styles.css">
-  <title>AI Council Hub</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#091713"><meta name="description" content="AI Council Hub — مساحة عمل تجمع ChatGPT وClaude وGemini في سير عمل واحد.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/styles.css">
+<title>AI Council Hub — Your AI Workspace</title>
 </head>
 <body>
-<header class="topbar"><a class="brand" href="#"><span class="brand-mark">✦</span><span>AI Council <small>HUB</small></span></a><div class="top-actions"><button id="langBtn" class="ghost" type="button">EN</button><span class="status"><i></i><span data-i18n="local">مساحة عمل محلية</span></span></div></header>
-<main class="shell">
-  <section class="hero"><div><p class="eyebrow" data-i18n="eyebrow">مركز التعاون الذكي</p><h1 data-i18n="headline">ثلاثة عقول. مساحة واحدة.</h1><p class="hero-copy" data-i18n="intro">حضّر أفكارك، وزّع الأسئلة، واجمع الإجابات حتى تتخذ قراراً أوضح.</p><div class="hero-note" data-i18n="notice">نسخة S1 تعمل يدوياً عبر المواقع الرسمية — لا يوجد اتصال آلي أو API.</div></div><div class="hero-orbit"><span>AI</span><b>✦</b></div></section>
-  <section class="section"><div class="section-head"><div><p class="eyebrow" data-i18n="council">المجلس</p><h2 data-i18n="assistants">المساعدون</h2></div><span class="muted" data-i18n="openOfficial">افتح الموقع الرسمي</span></div>
-    <div class="agent-grid">
-      <article class="agent-card"><div class="agent-icon chatgpt">◎</div><h3>ChatGPT</h3><p data-i18n="chatDesc">تحليل، تخطيط، وابتكار الحلول.</p><a class="link-btn" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT ↗</a></article>
-      <article class="agent-card"><div class="agent-icon claude">✳</div><h3>Claude</h3><p data-i18n="claudeDesc">تفكير متأنٍ ومراجعة التفاصيل.</p><a class="link-btn" href="https://claude.ai/" target="_blank" rel="noopener">Open Claude ↗</a></article>
-      <article class="agent-card"><div class="agent-icon gemini">✦</div><h3>Gemini</h3><p data-i18n="gemDesc">زوايا إضافية وأفكار متنوعة.</p><a class="link-btn" href="https://gemini.google.com/" target="_blank" rel="noopener">Open Gemini ↗</a></article>
-    </div>
-  </section>
-  <section class="section workspace"><div class="section-head"><div><p class="eyebrow" data-i18n="promptLab">مختبر الأوامر</p><h2 data-i18n="preparePrompt">جهّز سؤالك للمجلس</h2></div></div>
-    <label for="task" data-i18n="taskLabel">شنو المهمة أو السؤال؟</label><textarea id="task" rows="5" data-i18n-placeholder="taskPlaceholder" placeholder="اكتب الفكرة أو المشكلة بالتفصيل..."></textarea>
-    <div class="field-row"><div><label for="goal" data-i18n="goalLabel">الهدف</label><select id="goal"><option value="analyze" data-i18n="goalAnalyze">تحليل ومقارنة</option><option value="plan" data-i18n="goalPlan">خطة تنفيذ</option><option value="review" data-i18n="goalReview">مراجعة ونقد</option><option value="create" data-i18n="goalCreate">ابتكار وبناء</option></select></div><div><label for="tone" data-i18n="toneLabel">أسلوب الإجابة</label><select id="tone"><option value="detailed" data-i18n="toneDetailed">مفصل وعملي</option><option value="concise" data-i18n="toneConcise">مختصر ومباشر</option><option value="technical" data-i18n="toneTechnical">تقني ومتخصص</option></select></div></div>
-    <div class="button-row"><button id="generateBtn" class="primary" type="button" data-i18n="generate">إنشاء أوامر المجلس</button><button id="clearBtn" class="ghost" type="button" data-i18n="clear">مسح</button></div>
-    <div id="promptResults" class="prompt-results" aria-live="polite"><div class="empty-state" data-i18n="empty">الأوامر المخصصة لكل مساعد راح تظهر هنا.</div></div>
-  </section>
-  <section class="section workspace" id="memorySection">
-    <div class="section-head"><div><p class="eyebrow">S2 · ذاكرة المجلس</p><h2 data-i18n="memoryTitle">جلسات المجلس وإجاباته</h2></div><span class="muted" id="storageStatus">تخزين محلي على هذا الجهاز</span></div>
-    <div class="session-toolbar">
-      <input id="sessionTitle" type="text" maxlength="100" placeholder="عنوان الجلسة (اختياري)" aria-label="عنوان الجلسة">
-      <button id="newSessionBtn" class="ghost" type="button">جلسة جديدة</button>
-      <button id="saveSessionBtn" class="primary" type="button">حفظ الجلسة</button>
-    </div>
-    <div class="response-grid">
-      <div><label for="answerChatGPT">إجابة ChatGPT</label><textarea id="answerChatGPT" rows="6" placeholder="الصق إجابة ChatGPT هنا..."></textarea></div>
-      <div><label for="answerClaude">إجابة Claude</label><textarea id="answerClaude" rows="6" placeholder="الصق إجابة Claude هنا..."></textarea></div>
-      <div><label for="answerGemini">إجابة Gemini</label><textarea id="answerGemini" rows="6" placeholder="الصق إجابة Gemini هنا..."></textarea></div>
-    </div>
-    <div class="button-row"><button id="reviewPromptBtn" class="primary" type="button">إنشاء أمر المراجعة المتبادلة</button><button id="exportBtn" class="ghost" type="button">تصدير نسخة JSON</button><button id="importBtn" class="ghost" type="button">استيراد نسخة</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
-    <div id="reviewResult" class="review-result" hidden><div class="section-head"><h3>أمر المراجعة المتبادلة</h3><button id="copyReviewBtn" class="copy-btn" type="button">نسخ الأمر</button></div><pre id="reviewText"></pre></div>
-    <div class="saved-sessions"><div class="section-head"><h3 data-i18n="savedTitle">الجلسات المحفوظة</h3><span class="muted" id="sessionCount">0</span></div><div id="sessionList" class="session-list"><div class="empty-state">لا توجد جلسات محفوظة بعد.</div></div></div>
-    <p class="privacy-note">🔒 بياناتك تبقى في IndexedDB داخل هذا المتصفح. امسح بيانات المتصفح أو استخدم جهازاً آخر فقط بعد تصدير نسخة احتياطية.</p>
-  </section>
-  <section class="section"><div class="section-head"><div><p class="eyebrow" data-i18n="projectsEyebrow">مساحات العمل</p><h2 data-i18n="projects">مشاريعك</h2></div></div><div class="project-grid">
-    <article class="project-card"><span>01</span><h3 data-i18n="library">مكتبة الحيالي الرقمية</h3><p data-i18n="libraryDesc">المتجر، الإدارة، وتجربة المستخدم.</p></article>
-    <article class="project-card"><span>02</span><h3>TurboDL</h3><p data-i18n="turboDesc">بوت التحميل وخدمات تيليغرام.</p></article>
-    <article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p data-i18n="riftDesc">عالم القتال والتقدم داخل Roblox.</p></article>
-    <article class="project-card"><span>04</span><h3>MidnightFables</h3><p data-i18n="midDesc">قصص قصيرة سينمائية.</p></article>
-  </div></section>
-  <footer><span>AI Council Hub · S2</span><span data-i18n="footer">قرارك النهائي يبقى بيدك.</span></footer>
+<header class="topbar"><a class="brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><nav class="main-nav" aria-label="Main navigation"><a href="#council">المجلس</a><a href="#studio">مختبر الأوامر</a><a href="#memorySection">الجلسات</a><a href="#projects">المشاريع</a></nav><div class="top-actions"><span class="status"><i></i> محلي وآمن</span><button id="langBtn" class="lang-btn" type="button">EN</button></div></header>
+<main class="shell" id="home">
+<section class="hero"><div class="hero-content"><div class="hero-kicker"><span class="kicker-dot"></span> YOUR PERSONAL AI WORKSPACE <span class="version-tag">S3</span></div><h1>فكّر أوسع.<br><em>قرّر بثقة.</em></h1><p>اجمع قوة ChatGPT وClaude وGemini في مساحة واحدة. حضّر المهمة، قارن وجهات النظر، واحتفظ بكل قرار في مكانه.</p><div class="hero-actions"><a class="primary-link" href="#studio">ابدأ جلسة جديدة <span>↙</span></a><a class="text-link" href="#memorySection">استعرض جلساتك المحفوظة</a></div><div class="hero-footnote"><span>●</span> لا API مدفوع · لا تخزين بيانات دخول · بياناتك محلية</div></div><div class="hero-visual" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core"><span>AI</span><b>✦</b></div><div class="orbit-label label-one">ANALYZE</div><div class="orbit-label label-two">CREATE</div><div class="orbit-label label-three">DECIDE</div></div></section>
+<section class="workflow-strip"><div><span class="step-no">01</span><span><b>حضّر</b><small>اكتب المهمة</small></span></div><i>→</i><div><span class="step-no">02</span><span><b>استشر</b><small>اسأل النماذج</small></span></div><i>→</i><div><span class="step-no">03</span><span><b>راجع</b><small>اختبر الإجابات</small></span></div><i>→</i><div><span class="step-no">04</span><span><b>قرّر</b><small>احفظ النتيجة</small></span></div></section>
+<section class="section" id="council"><div class="section-heading"><div><span class="eyebrow">THE COUNCIL</span><h2>أعضاء المجلس</h2><p>ثلاثة مساعدين، وثلاث زوايا مختلفة للتفكير.</p></div><span class="section-index">01 / COUNCIL</span></div><div class="agent-grid">
+<article class="agent-card agent-chat"><div class="agent-top"><span class="agent-symbol">◎</span><span class="agent-role">STRATEGY & IDEAS</span></div><h3>ChatGPT</h3><p>للتفكير المنظم، بناء الحلول، وتحويل الأفكار إلى خطوات قابلة للتنفيذ.</p><a class="agent-link" href="https://chatgpt.com/" target="_blank" rel="noopener">افتح ChatGPT <span>↗</span></a></article>
+<article class="agent-card agent-claude"><div class="agent-top"><span class="agent-symbol">✳</span><span class="agent-role">REASONING & REVIEW</span></div><h3>Claude</h3><p>للتدقيق العميق، مراجعة المنطق، واكتشاف الثغرات والافتراضات.</p><a class="agent-link" href="https://claude.ai/" target="_blank" rel="noopener">افتح Claude <span>↗</span></a></article>
+<article class="agent-card agent-gemini"><div class="agent-top"><span class="agent-symbol">✦</span><span class="agent-role">RESEARCH & PERSPECTIVES</span></div><h3>Gemini</h3><p>لاستكشاف زوايا بديلة، توسيع الخيارات، واقتراح أفكار جديدة.</p><a class="agent-link" href="https://gemini.google.com/" target="_blank" rel="noopener">افتح Gemini <span>↗</span></a></article>
+</div></section>
+<section class="section workspace-section" id="studio"><div class="section-heading"><div><span class="eyebrow">PROMPT STUDIO</span><h2>مختبر الأوامر</h2><p>حوّل فكرتك إلى تعليمات واضحة ومخصصة لكل عضو.</p></div><span class="section-index">02 / CREATE</span></div>
+<div class="studio-layout"><div class="studio-form"><div class="form-title"><span class="form-icon">✎</span><div><b>جلسة عمل جديدة</b><small>ابدأ بتحديد المهمة والسياق</small></div></div>
+<label for="sessionTitle">اسم الجلسة <small>اختياري</small></label><input id="sessionTitle" class="text-input" type="text" maxlength="100" placeholder="مثلاً: تطوير المكتبة الرقمية">
+<label for="task">المهمة أو السؤال</label><textarea id="task" rows="5" placeholder="اشرح ما تريد إنجازه، وأضف التفاصيل المهمة..."></textarea>
+<div class="field-row"><div><label for="goal">الهدف</label><select id="goal"><option value="analyze">تحليل ومقارنة</option><option value="plan">خطة تنفيذ</option><option value="review">مراجعة ونقد</option><option value="create">ابتكار وبناء</option></select></div><div><label for="tone">عمق الإجابة</label><select id="tone"><option value="detailed">مفصل وعملي</option><option value="concise">مختصر ومباشر</option><option value="technical">تقني ومتخصص</option></select></div></div>
+<div class="button-row"><button id="generateBtn" class="primary" type="button">إنشاء أوامر المجلس <span>✦</span></button><button id="clearBtn" class="ghost" type="button">مسح الحقول</button></div></div>
+<aside class="studio-aside"><span class="aside-label">WORKFLOW TIP</span><div class="tip-mark">✦</div><h3>أفضل نتيجة تبدأ بسياق واضح</h3><p>اذكر الهدف، القيود، الميزانية أو المدة، وما الذي تعتبره نجاحاً. كلما كان السياق أوضح، كانت الإجابات أكثر فائدة.</p><div class="tip-rule"></div><div class="tip-meta"><span>PRIVATE BY DESIGN</span><b>LOCAL STORAGE</b></div></aside></div>
+<div id="promptResults" class="prompt-results" aria-live="polite"><div class="empty-state">أوامر ChatGPT وClaude وGemini ستظهر هنا بعد إنشاء المهمة.</div></div>
+</section>
+<section class="section workspace-section" id="memorySection"><div class="section-heading"><div><span class="eyebrow">COUNCIL MEMORY</span><h2>غرفة الاجتماعات</h2><p>اجمع الإجابات، أنشئ جولات المراجعة، واحتفظ بسجل قراراتك.</p></div><span class="section-index">03 / REVIEW</span></div>
+<div class="memory-bar"><div><span class="memory-indicator"></span><span id="storageStatus">التخزين المحلي جاهز</span></div><div class="memory-actions"><button id="newSessionBtn" class="ghost" type="button">＋ جلسة جديدة</button><button id="saveSessionBtn" class="primary" type="button">حفظ الجلسة</button></div></div>
+<div class="response-grid"><div class="response-card"><label for="answerChatGPT"><span class="mini-dot chat-dot"></span> إجابة ChatGPT</label><textarea id="answerChatGPT" rows="7" placeholder="الصق إجابة ChatGPT هنا..."></textarea></div><div class="response-card"><label for="answerClaude"><span class="mini-dot claude-dot"></span> إجابة Claude</label><textarea id="answerClaude" rows="7" placeholder="الصق إجابة Claude هنا..."></textarea></div><div class="response-card"><label for="answerGemini"><span class="mini-dot gem-dot"></span> إجابة Gemini</label><textarea id="answerGemini" rows="7" placeholder="الصق إجابة Gemini هنا..."></textarea></div></div>
+<div class="review-toolbar"><div><b>ماذا بعد جمع الإجابات؟</b><small>اختر مراجعة موحدة أو جولة تحكيم منفصلة لكل نموذج.</small></div><div class="button-row"><button id="reviewPromptBtn" class="secondary" type="button">مراجعة موحدة</button><button id="peerReviewBtn" class="primary" type="button">جولات التحكيم <span>✦</span></button></div></div>
+<div id="reviewResult" class="review-result" hidden><div class="section-head"><h3>مخرجات المراجعة</h3><button id="copyReviewBtn" class="copy-btn" type="button">نسخ الأمر</button></div><pre id="reviewText"></pre></div>
+<div id="peerResults" class="peer-results" aria-live="polite"></div>
+<div class="saved-sessions"><div class="saved-heading"><div><span class="eyebrow">YOUR HISTORY</span><h3>الجلسات المحفوظة</h3></div><span class="count-pill" id="sessionCount">0</span></div><div class="session-tools"><input id="sessionSearch" type="search" placeholder="ابحث في جلساتك..." aria-label="البحث في الجلسات"><div><button id="exportBtn" class="ghost" type="button">↓ تصدير JSON</button><button id="importBtn" class="ghost" type="button">↑ استيراد</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></div><div id="sessionList" class="session-list"><div class="empty-state">لا توجد جلسات محفوظة بعد.</div></div></div>
+<p class="privacy-note">🔒 تُحفظ الجلسات في هذا المتصفح فقط. صدّر نسخة احتياطية قبل مسح بيانات المتصفح أو الانتقال إلى جهاز آخر.</p></section>
+<section class="section" id="projects"><div class="section-heading"><div><span class="eyebrow">ACTIVE WORKSPACES</span><h2>مشاريع على الطاولة</h2><p>مساحات يمكنك تخصيص جلسات المجلس لها.</p></div><span class="section-index">04 / PROJECTS</span></div><div class="project-grid"><article class="project-card"><span>01</span><h3>مكتبة الحيالي الرقمية</h3><p>التجارة الرقمية وتجربة المستخدم.</p></article><article class="project-card"><span>02</span><h3>TurboDL</h3><p>خدمات التحميل وأتمتة تيليغرام.</p></article><article class="project-card"><span>03</span><h3>Riftborn Arena</h3><p>عالم القتال والتقدم داخل Roblox.</p></article><article class="project-card"><span>04</span><h3>MidnightFables</h3><p>قصص قصيرة بأسلوب سينمائي.</p></article></div></section>
+<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">✦</span><span>AI Council <small>WORKSPACE</small></span></a><span>صُنع ليكون قرارك أوضح — لا ليقرّر بدلاً عنك.</span><span>v3.0 · S3</span></footer>
 </main><script src="assets/app.js" defer></script></body></html>
