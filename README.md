@@ -1,28 +1,28 @@
 # AI Council Hub
 
-A mobile-first workspace for preparing prompts and comparing responses from ChatGPT, Claude, and Gemini.
+A mobile-first, bilingual (Arabic/English) workspace for organizing manual collaboration with ChatGPT, Claude, and Gemini.
 
-## S1 features
-- Arabic RTL and English LTR interface
-- Mobile-first responsive dashboard
-- Official assistant links
-- Prompt composer with assistant-specific prompts
-- Installable PWA shell and basic offline caching
-- No paid APIs, credential storage, or automated account access
+## Current release: S3
+- Redesigned responsive dashboard with a premium dark emerald and warm-gold visual system
+- Official links to ChatGPT, Claude, and Gemini
+- Prompt studio with role-specific prompts
+- Local session storage using IndexedDB
+- Paste and keep each assistant's response
+- Unified review prompt to compare agreement, disagreement, gaps, and uncertainty
+- Independent peer-review rounds: each assistant reviews the other available answers
+- Search saved sessions
+- Import/export JSON backups
+- Installable PWA shell with versioned offline cache
 
-## Important
-This version does **not** connect to the assistants automatically. Open each official service yourself, paste the generated prompt, then bring the responses back into your workflow. Never share passwords, session cookies, or private access tokens.
+## Privacy and limitations
+- No paid APIs are used.
+- No passwords, cookies, or account tokens are collected.
+- The site does not connect to AI services automatically. Users open official services and copy/paste prompts and answers manually.
+- Sessions are stored in the current browser on the current device. Export a JSON backup before clearing browser data or changing devices.
+- Generated review prompts are instructions for the user to submit to an assistant; the site does not execute them automatically.
 
-## Run locally
-Serve this folder with any static HTTP server, or publish it using GitHub Pages. Service workers require HTTPS or localhost.
-
-## Deploy with GitHub Pages
-1. Open repository **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select **main** and **/(root)**, then save.
-4. Wait for the Pages deployment to finish.
+## Run and deploy
+Serve the repository root over HTTPS or localhost. For GitHub Pages, select **Settings → Pages → Deploy from a branch → main → /(root)**.
 
 ## Roadmap
-- S2: Local session and response storage, import/export
-- S3: Cross-review and critique prompts
-- S4: Voting, final decision, and project archive
+- S4: Decision matrix, weighted scoring, final decision record, and project-specific workspaces
